@@ -9,6 +9,7 @@ namespace GeneticAlgorithmFramework.EightQueenProblem
 {
 	public class Digit : IGene
 	{
+		static Random _rnd = new Random();
 		public Digit(int lowerBound = 0, int upperBound = 9)
 		{
 			this.LowerBound = lowerBound;
@@ -33,8 +34,7 @@ namespace GeneticAlgorithmFramework.EightQueenProblem
 
 		public void Mutate()
 		{
-			var rnd = new Random();
-			this.Value = rnd.Next(LowerBound, UpperBound + 1);
+			this.Value = _rnd.Next(LowerBound, UpperBound + 1);
 		}
 
 		public int LowerBound { get; set; }

@@ -12,7 +12,7 @@ namespace GeneticAlgorithm
 		IChromosome Crossover(IChromosome other);
 		IChromosome Mutate();
 		int GetLenght();
-		double Fitness { get; set; }
+		double Fitness { get; }
 	}
 
 	public interface IChromosomeFactory
@@ -27,6 +27,11 @@ namespace GeneticAlgorithm
 
 	public class Chromosome<T> : IChromosome where T : IGene
 	{
+		public Chromosome<T> mom;
+		public Chromosome<T> dad;
+
+		static Random _rnd = new Random();
+
 		protected IList<T> _genes;
 
 		public Chromosome(IList<T> genes)
@@ -43,23 +48,34 @@ namespace GeneticAlgorithm
 
 			Chromosome<T> _other = (Chromosome<T>)other;
 
-			Random rnd = new Random();
-			var result = new List<IGene>();
-			int cross_idx = rnd.Next(0, GetLenght());
+			var g = new List<T>();
+			int cross_idx = _rnd.Next(0, GetLenght()+1);
 			for (int i = 0; i < GetLenght(); i++)
 			{
-				result.Add(i < cross_idx ? _genes[i] : _other._genes[i]);
+				g.Add(i < cross_idx ? _genes[i] : _other._genes[i]);
 			}
 
-			return new Chromosome<IGene>(result);
+			var offspring = this.Create(g);
+			offspring.mom = this;
+			offspring.dad = _other;
+			return Create(g);
 		}
 
 		public IChromosome Mutate()
 		{
-			Random rnd = new Random();
 			if (_genes != null || _genes.Count() > 0)
-				_genes[rnd.Next(0, GetLenght())].Mutate() ;  //TODO: Mutation of just one gene might not be enough.
+				_genes[_rnd.Next(0, GetLenght())].Mutate() ;  //TODO: Mutation of just one gene might not be enough.
 			return this;
+		}
+
+		/// <summary>
+		/// Override to create your own chromosomes in subclass
+		/// </summary>
+		/// <param name="g">A list of genes to create a new chromosome</param>
+		/// <returns></returns>
+		public virtual Chromosome<T> Create(IList<T> g)
+		{
+			return new Chromosome<T>(g);
 		}
 
 		public int CompareTo(IChromosome other)
@@ -67,6 +83,6 @@ namespace GeneticAlgorithm
 			return this.Fitness.CompareTo(other.Fitness);
 		}
 
-		public virtual double Fitness { get; set; }
+		public virtual double Fitness { get;}
 	}
 }

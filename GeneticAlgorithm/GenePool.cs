@@ -13,7 +13,7 @@ namespace GeneticAlgorithm
 		///  Repeats the following steps until the new population is generated from previous generation
 		///     Selection
 		///     Crossover
-		///     Mutaion
+		///     Mutation
 		///     Accepting
 		/// </summary>
 		void CreateNextGeneration();
@@ -46,14 +46,13 @@ namespace GeneticAlgorithm
 		IChromosome BestChromosome { get; }
 
 		IChromosomeFactory ChromosomeFactory { get; set; }
-
-		double GetFitness(IChromosome c);
 	}
 
 	public abstract class GenePool : IGenePool
 	{
-		IList<IChromosome> _pool;
+		List<IChromosome> _pool;
 		int _poolSize;
+		static Random _rnd = new Random();
 
 		public GenePool(int poolSize, IChromosomeFactory factory)
 		{
@@ -85,16 +84,9 @@ namespace GeneticAlgorithm
 				///crossover is mutated and added to the next generation population
 				nextGeneration.Add(Select().Crossover(Select()).Mutate());
 			}
-			UpdateFitnessValues(nextGeneration);
-			_pool = nextGeneration;
-		}
-
-		private void UpdateFitnessValues(List<IChromosome> nextGeneration)
-		{
-			foreach (var c in nextGeneration)
-			{
-				c.Fitness = GetFitness(c);
-			}
+			_pool.AddRange(nextGeneration);
+			_pool.Sort();
+			_pool = _pool.GetRange(_poolSize, _poolSize); // get the top half
 		}
 
 		public IChromosome BestChromosome
@@ -110,20 +102,9 @@ namespace GeneticAlgorithm
 
 		public IChromosome Select()
 		{
-			var rnd = new Random();
 			int idx = -1;
-			do { idx = rnd.Next(0, _poolSize); } while (rnd.NextDouble() < _pool[idx].Fitness);
+			do { idx = _rnd.Next(0, _poolSize); } while (_rnd.NextDouble() > _pool[idx].Fitness);
 			return _pool[idx];
-		}
-
-		/// <summary>
-		/// Override this with your fitness rules
-		/// </summary>
-		/// <param name="c"></param>
-		/// <returns></returns>
-		public virtual double GetFitness(IChromosome c)
-		{
-			return 0;
 		}
 
 		public IChromosome GenerateSolution(int maxIteration, double threshold)
@@ -131,6 +112,8 @@ namespace GeneticAlgorithm
 			for (int i = 0; i < maxIteration; i++)
 			{
 				if (this.BestChromosome.Fitness >= threshold) return this.BestChromosome;
+				Console.WriteLine(i + ": "+ this.BestChromosome.Fitness);
+				Console.WriteLine(this.BestChromosome.ToString());
 				CreateNextGeneration();
 			}
 			return this.BestChromosome;
