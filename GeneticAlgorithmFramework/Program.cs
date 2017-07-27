@@ -1,46 +1,38 @@
 ﻿using GeneticAlgorithm;
+using GeneticAlgorithmFramework.EightQueenProblem;
 using Ninject;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GeneticAlgorithmFramework
 {
-    class Program
-    {
-        
+	class Program
+	{
 
-        static void Main(string[] args)
-        {
-            using (IKernel kernel = new StandardKernel())
-            {
-                kernel.Bind<IGenePool>()
-                              .To<GenePool>()
-                              .WithConstructorArgument("poolSize", 100);
+		static void Main(string[] args)
+		{
+			using (IKernel kernel = new StandardKernel())
+			{
+				kernel.Bind<IChromosomeFactory>()
+					.To<QueensSetupFactory>();
 
-                kernel.Bind<IChromosome>()
-                    .To<Chromosome<IntGene>>();
+				kernel.Bind<IGenePool>()
+							.To<QueensPool>()
+							.WithConstructorArgument("poolSize", 100);
+
+				kernel.Bind<IChromosome>()
+					.To<Chromosome<Digit>>();
+
+				kernel.Bind<Chromosome<Digit>>()
+					.To<QueensSetup>()
+					.WithConstructorArgument("size", 8);
 
 				var pool = kernel.Get<IGenePool>();
-				
-            }
-        }
-    }
-
-    public class IntGene : IGene
-    {
-        public IntGene()
-        {
-            Mutate();
-        }
-        public int Value { get; set; }
-
-        public void Mutate()
-        {
-            var rnd = new Random();
-            this.Value = rnd.Next(1, 9);
-        }
-    }
+				var result = pool.GenerateSolution(100, 0.8);
+				Console.WriteLine(result.ToString());
+			}
+		}
+	}
 }
