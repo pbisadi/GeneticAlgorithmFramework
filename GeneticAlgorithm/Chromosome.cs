@@ -33,10 +33,12 @@ namespace GeneticAlgorithm
 		static Random _rnd = new Random();
 
 		protected IList<T> _genes;
+		protected int[] _cross; // keeps the track of crosses
 
 		public Chromosome(IList<T> genes)
 		{
 			_genes = genes;
+			_cross = new int[_genes.Count-1];
 		}
 
 		public int GetLenght() { return _genes.Count(); }
@@ -49,7 +51,7 @@ namespace GeneticAlgorithm
 			Chromosome<T> _other = (Chromosome<T>)other;
 
 			var g = new List<T>();
-			int cross_idx = _rnd.Next(0, GetLenght()+1);
+			int cross_idx = GetCrossIndex();
 			for (int i = 0; i < GetLenght(); i++)
 			{
 				g.Add(i < cross_idx ? _genes[i] : _other._genes[i]);
@@ -59,6 +61,22 @@ namespace GeneticAlgorithm
 			offspring.mom = this;
 			offspring.dad = _other;
 			return Create(g);
+		}
+
+		private int GetCrossIndex()
+		{
+			int max = _cross.Max();
+			bool done = false;
+			int result = -1;
+
+			while (!done)
+			{
+				result = _rnd.Next(0, GetLenght()-1);
+				if (_rnd.Next(0,max+1) <= _cross[result]) done = true;
+			}
+
+			_cross[result]++;
+			return result;
 		}
 
 		public IChromosome Mutate()

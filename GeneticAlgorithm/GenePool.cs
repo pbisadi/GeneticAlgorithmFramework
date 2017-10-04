@@ -77,13 +77,13 @@ namespace GeneticAlgorithm
 
 		public void CreateNextGeneration()
 		{
-			var nextGeneration = new List<IChromosome>();
-			while (nextGeneration.Count < _poolSize)
-			{
+			var nextGeneration = new IChromosome[_poolSize];
+			Parallel.For(0, _poolSize, i => {
 				///Two chromosomes are selected and the result of their 
 				///crossover is mutated and added to the next generation population
-				nextGeneration.Add(Select().Crossover(Select()).Mutate());
-			}
+				nextGeneration[i] = Select().Crossover(Select()).Mutate();
+			});
+
 			_pool.AddRange(nextGeneration);
 			_pool.Sort();
 			_pool = _pool.GetRange(_poolSize, _poolSize); // get the top half
