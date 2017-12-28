@@ -6,19 +6,20 @@ using System;
 
 namespace GeneticAlgorithmFramework.EightQueenProblem
 {
-	public class QueensSetup : Chromosome<Digit>
+	public class QueensArrangement : Chromosome<Digit>
 	{
-		public QueensSetup(IList<Digit> g) : base(g) { }
+		public QueensArrangement(IList<Digit> g) : base(g) { }
 
 		public override string ToString()
 		{
 			var result = new StringBuilder();
 			for (int i = 0; i < this.GetLenght(); i++)
 			{
-				result.Append(new string('-', _genes[i].Value - 1));
-				result.Append("Q");
-				result.Append(new string('-', _genes[i].UpperBound - _genes[i].Value));
-				result.AppendLine();
+				//result.Append(new string('-', _genes[i].Value - 1));
+				//result.Append("Q");
+				//result.Append(new string('-', _genes[i].UpperBound - _genes[i].Value));
+				//result.AppendLine();
+				result.Append(_genes[i].Value.ToString());
 			}
 			return result.ToString();
 		}
@@ -49,12 +50,12 @@ namespace GeneticAlgorithmFramework.EightQueenProblem
 						hits++;
 				}
 			}
-			return 1 - hits * (1.0 / 28.0);
+			return 1 - hits * (1.0 / (_genes.Count / 2 * (_genes.Count - 1)));
 		}
 
 		public override Chromosome<Digit> Create(IList<Digit> g)
 		{
-			return new QueensSetup(g);
+			return new QueensArrangement(g);
 		}
 	}
 }

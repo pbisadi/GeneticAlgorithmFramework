@@ -16,17 +16,18 @@ namespace GeneticAlgorithmFramework
 			using (IKernel kernel = new StandardKernel())
 			{
 				kernel.Bind<IChromosomeFactory>()
-					.To<QueensSetupFactory>();
+					.To<QueensArrangementFactory>()
+					.WithConstructorArgument("boardSize", 8);
 
 				kernel.Bind<IGenePool>()
-							.To<QueensPool>()
-							.WithConstructorArgument("poolSize", 5000);
+					.To<QueensPool>()
+					.WithConstructorArgument("poolSize", 2);
 
 				kernel.Bind<IChromosome>()
 					.To<Chromosome<Digit>>();
 
 				kernel.Bind<Chromosome<Digit>>()
-					.To<QueensSetup>()
+					.To<QueensArrangement>()
 					.WithConstructorArgument("size", 8);
 
 				var pool = kernel.Get<IGenePool>();

@@ -48,9 +48,9 @@
     <Compile Include="EightQueenProblem\Digit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EightQueenProblem\QueensSetup.cs" />
+    <Compile Include="EightQueenProblem\QueensArrangement.cs" />
     <Compile Include="EightQueenProblem\QueensPool.cs" />
-    <Compile Include="EightQueenProblem\QueensSetupFactory.cs" />
+    <Compile Include="EightQueenProblem\QueensArrangementFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

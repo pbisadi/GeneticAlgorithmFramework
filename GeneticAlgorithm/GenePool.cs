@@ -1,4 +1,5 @@
-﻿using Ninject;
+﻿using Algorithm.Randomization;
+using Ninject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,16 +78,20 @@ namespace GeneticAlgorithm
 
 		public void CreateNextGeneration()
 		{
-			var nextGeneration = new IChromosome[_poolSize];
-			Parallel.For(0, _poolSize, i => {
+			var nextGeneration = new List<IChromosome>();
+			while (nextGeneration.Count < _poolSize)
+			{
 				///Two chromosomes are selected and the result of their 
 				///crossover is mutated and added to the next generation population
-				nextGeneration[i] = Select().Crossover(Select()).Mutate();
-			});
+				nextGeneration.Add(Select().Crossover(Select()).Mutate());
+			}
 
 			_pool.AddRange(nextGeneration);
 			_pool.Sort();
 			_pool = _pool.GetRange(_poolSize, _poolSize); // get the top half
+			//TODO: Replace picking top half with random weighted half selection
+			//See:
+			//https://stackoverflow.com/questions/2140787/select-k-random-elements-from-a-list-whose-elements-have-weights
 		}
 
 		public IChromosome BestChromosome
@@ -102,9 +107,7 @@ namespace GeneticAlgorithm
 
 		public IChromosome Select()
 		{
-			int idx = -1;
-			do { idx = _rnd.Next(0, _poolSize); } while (_rnd.NextDouble() > _pool[idx].Fitness);
-			return _pool[idx];
+			return _pool[_pool.WeightedPick(c => c.Fitness)];
 		}
 
 		public IChromosome GenerateSolution(int maxIteration, double threshold)

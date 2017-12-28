@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Algorithm.Randomization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace GeneticAlgorithm
 	public interface IGene
 	{
 		void Mutate();
+		IGene Clone();
 	}
 
 	public class Chromosome<T> : IChromosome where T : IGene
@@ -39,13 +41,14 @@ namespace GeneticAlgorithm
 		{
 			_genes = genes;
 			_cross = new int[_genes.Count-1];
+			for (int i = 0; i < _cross.Length; i++) { _cross[i] = 1; }
 		}
 
 		public int GetLenght() { return _genes.Count(); }
 
 		public IChromosome Crossover(IChromosome other)
 		{
-			Debug.Assert(this.GetLenght() == other.GetLenght(), "Two chromosomes must have the same lenght.");
+			Debug.Assert(this.GetLenght() == other.GetLenght(), "Two chromosomes must have the same length.");
 			Debug.Assert(other is Chromosome<T>, "Two chromosome must be exact same type.");
 
 			Chromosome<T> _other = (Chromosome<T>)other;
@@ -54,29 +57,22 @@ namespace GeneticAlgorithm
 			int cross_idx = GetCrossIndex();
 			for (int i = 0; i < GetLenght(); i++)
 			{
-				g.Add(i < cross_idx ? _genes[i] : _other._genes[i]);
+				IGene new_gene = i < cross_idx ? _genes[i].Clone() : _other._genes[i].Clone();
+				g.Add((T)new_gene);
 			}
 
 			var offspring = this.Create(g);
 			offspring.mom = this;
 			offspring.dad = _other;
+			Debug.WriteLine(String.Format("Crossover {0} & {1} => {2}", this.ToString(), other.ToString(), offspring.ToString()));
 			return Create(g);
 		}
 
 		private int GetCrossIndex()
 		{
-			int max = _cross.Max();
-			bool done = false;
-			int result = -1;
-
-			while (!done)
-			{
-				result = _rnd.Next(0, GetLenght()-1);
-				if (_rnd.Next(0,max+1) <= _cross[result]) done = true;
-			}
-
-			_cross[result]++;
-			return result;
+			int idx = _cross.WeightedPick();
+			_cross[idx]++;
+			return idx;
 		}
 
 		public IChromosome Mutate()

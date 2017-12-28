@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 namespace GeneticAlgorithmFramework
 {
-	public class QueensSetupFactory : IChromosomeFactory
+	public class QueensArrangementFactory : IChromosomeFactory
 	{
 		int _boardSize;
-		public QueensSetupFactory(int boardSize = 8)
+		public QueensArrangementFactory(int boardSize = 8)
 		{
 			_boardSize = boardSize;
 		}
@@ -19,7 +19,7 @@ namespace GeneticAlgorithmFramework
 			{
 				g.Add(new Digit(1, _boardSize));
 			}
-			return new QueensSetup(g);
+			return new QueensArrangement(g);
 		}
 	}
 }

@@ -37,6 +37,13 @@ namespace GeneticAlgorithmFramework.EightQueenProblem
 			this.Value = _rnd.Next(LowerBound, UpperBound + 1);
 		}
 
+		public IGene Clone()
+		{
+			var other = new Digit(this.LowerBound, this.UpperBound);
+			other.Value = _value;
+			return other;
+		}
+
 		public int LowerBound { get; set; }
 		public int UpperBound { get; set; }
 	}
