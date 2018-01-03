@@ -62,10 +62,10 @@ namespace GeneticAlgorithm
 			}
 
 			var offspring = this.Create(g);
-			offspring.mom = this;
-			offspring.dad = _other;
+			//offspring.mom = this;
+			//offspring.dad = _other;
 			Debug.WriteLine(String.Format("Crossover {0} & {1} => {2}", this.ToString(), other.ToString(), offspring.ToString()));
-			return Create(g);
+			return offspring;
 		}
 
 		private int GetCrossIndex()
@@ -75,7 +75,7 @@ namespace GeneticAlgorithm
 			return idx;
 		}
 
-		public IChromosome Mutate()
+		public virtual IChromosome Mutate()
 		{
 			if (_genes != null || _genes.Count() > 0)
 				_genes[_rnd.Next(0, GetLenght())].Mutate() ;  //TODO: Mutation of just one gene might not be enough.

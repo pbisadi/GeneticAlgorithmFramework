@@ -15,11 +15,11 @@ namespace GeneticAlgorithmFramework.EightQueenProblem
 			var result = new StringBuilder();
 			for (int i = 0; i < this.GetLenght(); i++)
 			{
-				//result.Append(new string('-', _genes[i].Value - 1));
-				//result.Append("Q");
-				//result.Append(new string('-', _genes[i].UpperBound - _genes[i].Value));
-				//result.AppendLine();
-				result.Append(_genes[i].Value.ToString());
+				result.Append(new string('-', _genes[i].Value - 1));
+				result.Append("Q");
+				result.Append(new string('-', _genes[i].UpperBound - _genes[i].Value));
+				result.AppendLine();
+				//result.Append(_genes[i].Value.ToString());
 			}
 			return result.ToString();
 		}

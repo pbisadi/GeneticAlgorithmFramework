@@ -51,16 +51,26 @@
     <Compile Include="EightQueenProblem\QueensArrangement.cs" />
     <Compile Include="EightQueenProblem\QueensPool.cs" />
     <Compile Include="EightQueenProblem\QueensArrangementFactory.cs" />
+    <Compile Include="TravelingSalesman\City.cs" />
+    <Compile Include="TravelingSalesman\LocationIndex.cs" />
+    <Compile Include="TravelingSalesman\Trip.cs" />
+    <Compile Include="TravelingSalesman\TripFactory.cs" />
+    <Compile Include="TravelingSalesman\TripPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Algorithms\DataStructures\Algorithm.csproj">
+      <Project>{33949281-e929-48e8-928b-aaeacf32aa20}</Project>
+      <Name>Algorithm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneticAlgorithm\GeneticAlgorithm.csproj">
       <Project>{4dbefe98-0dbf-4667-a15d-a5c449f912e3}</Project>
       <Name>GeneticAlgorithm</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
