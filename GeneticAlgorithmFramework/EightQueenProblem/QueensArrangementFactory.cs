@@ -1,10 +1,11 @@
 ﻿using GeneticAlgorithm;
 using GeneticAlgorithmFramework.EightQueenProblem;
 using System.Collections.Generic;
+using System;
 
 namespace GeneticAlgorithmFramework
 {
-	public class QueensArrangementFactory : IChromosomeFactory
+	public class QueensArrangementFactory: IChromosomeFactory<QueensArrangement, Digit>
 	{
 		int _boardSize;
 		public QueensArrangementFactory(int boardSize = 8)
@@ -12,7 +13,7 @@ namespace GeneticAlgorithmFramework
 			_boardSize = boardSize;
 		}
 
-		public IChromosome CreateCromosome()
+		QueensArrangement IChromosomeFactory<QueensArrangement, Digit>.CreateChromosome()
 		{
 			var g = new List<Digit>();
 			for (int i = 0; i < _boardSize; i++)

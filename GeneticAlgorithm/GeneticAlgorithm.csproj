@@ -30,8 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PBCD.Algorithms, Version=1.0.6703.28604, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PBCD.Algorithms.1.0.6703.28604\lib\net45\PBCD.Algorithms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -44,17 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Chromosome.cs" />
-    <Compile Include="GenePool.cs" />
+    <Compile Include="ChromosomePool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Algorithms\DataStructures\Algorithm.csproj">
-      <Project>{33949281-e929-48e8-928b-aaeacf32aa20}</Project>
-      <Name>Algorithm</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

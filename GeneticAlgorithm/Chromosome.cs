@@ -5,20 +5,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace GeneticAlgorithm
 {
-	public interface IChromosome : IComparable<IChromosome>
+	public interface IChromosome<G> : IEnumerable<G>, IComparable<IChromosome<G>> where G : IGene
 	{
-		IChromosome Crossover(IChromosome other);
-		IChromosome Mutate();
+		IChromosome<G> Crossover(IChromosome<G> other);
+		IChromosome<G> Mutate();
 		int GetLenght();
 		double Fitness { get; }
 	}
 
-	public interface IChromosomeFactory
+	public interface IChromosomeFactory<C, G> where C : IChromosome<G> where G : IGene
 	{
-		IChromosome CreateCromosome();
+		C CreateChromosome();
 	}
 
 	public interface IGene
@@ -27,17 +28,17 @@ namespace GeneticAlgorithm
 		IGene Clone();
 	}
 
-	public class Chromosome<T> : IChromosome where T : IGene
+	public class Chromosome<G> : IChromosome<G> where G : IGene
 	{
-		public Chromosome<T> mom;
-		public Chromosome<T> dad;
+		public Chromosome<G> mom;
+		public Chromosome<G> dad;
 
 		static Random _rnd = new Random();
 
-		protected IList<T> _genes;
+		protected IList<G> _genes;
 		protected int[] _cross; // keeps the track of crosses
 
-		public Chromosome(IList<T> genes)
+		public Chromosome(IList<G> genes)
 		{
 			_genes = genes;
 			_cross = new int[_genes.Count-1];
@@ -46,19 +47,19 @@ namespace GeneticAlgorithm
 
 		public int GetLenght() { return _genes.Count(); }
 
-		public IChromosome Crossover(IChromosome other)
+		public IChromosome<G> Crossover(IChromosome<G> other)
 		{
 			Debug.Assert(this.GetLenght() == other.GetLenght(), "Two chromosomes must have the same length.");
-			Debug.Assert(other is Chromosome<T>, "Two chromosome must be exact same type.");
+			Debug.Assert(other is Chromosome<G>, "Two chromosome must be exact same type.");
 
-			Chromosome<T> _other = (Chromosome<T>)other;
+			Chromosome<G> _other = (Chromosome<G>)other;
 
-			var g = new List<T>();
+			var g = new List<G>();
 			int cross_idx = GetCrossIndex();
 			for (int i = 0; i < GetLenght(); i++)
 			{
 				IGene new_gene = i < cross_idx ? _genes[i].Clone() : _other._genes[i].Clone();
-				g.Add((T)new_gene);
+				g.Add((G)new_gene);
 			}
 
 			var offspring = this.Create(g);
@@ -75,7 +76,7 @@ namespace GeneticAlgorithm
 			return idx;
 		}
 
-		public virtual IChromosome Mutate()
+		public virtual IChromosome<G> Mutate()
 		{
 			if (_genes != null || _genes.Count() > 0)
 				_genes[_rnd.Next(0, GetLenght())].Mutate() ;  //TODO: Mutation of just one gene might not be enough.
@@ -87,14 +88,24 @@ namespace GeneticAlgorithm
 		/// </summary>
 		/// <param name="g">A list of genes to create a new chromosome</param>
 		/// <returns></returns>
-		public virtual Chromosome<T> Create(IList<T> g)
+		public virtual Chromosome<G> Create(IList<G> g)
 		{
-			return new Chromosome<T>(g);
+			return new Chromosome<G>(g);
 		}
 
-		public int CompareTo(IChromosome other)
+		public int CompareTo(IChromosome<G> other)
 		{
 			return this.Fitness.CompareTo(other.Fitness);
+		}
+
+		public IEnumerator<G> GetEnumerator()
+		{
+			return _genes.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			throw new NotImplementedException();
 		}
 
 		public virtual double Fitness { get;}

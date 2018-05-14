@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace GeneticAlgorithmFramework.TravelingSalesman
 {
-	public class TripPool : GenePool
+	public class TripPool : ChromosomePool<Trip,LocationIndex>
 	{
 		static List<City> _cities;
 
-		public TripPool(int poolSize, IChromosomeFactory factory) : base(poolSize, factory)
+		public TripPool(int poolSize, IChromosomeFactory<Trip, LocationIndex> factory) : base(poolSize, factory)
 		{
 			_cities = new List<City>();
 
@@ -32,7 +32,7 @@ namespace GeneticAlgorithmFramework.TravelingSalesman
 			_cities.Add(new City() { Name = "D3", X = -2.0, Y = 0.5 });
 		}
 
-		public TripPool(int poolSize, IChromosomeFactory factory, List<City> cities) : base(poolSize, factory)
+		public TripPool(int poolSize, IChromosomeFactory<Trip, LocationIndex> factory, List<City> cities) : base(poolSize, factory)
 		{
 			_cities = cities;
 		}

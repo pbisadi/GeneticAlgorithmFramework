@@ -53,7 +53,7 @@ namespace GeneticAlgorithmFramework.TravelingSalesman
 			return Math.Sqrt(Math.Pow((a.X - b.X), 2) + Math.Pow((a.Y - b.Y), 2));
 		}
 
-		public override IChromosome Mutate()
+		public override IChromosome<LocationIndex> Mutate()
 		{
 			if (_genes != null || _genes.Count() > 0)
 			{

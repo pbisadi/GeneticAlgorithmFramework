@@ -2,7 +2,7 @@
 
 namespace GeneticAlgorithmFramework.EightQueenProblem
 {
-	public class QueensPool : GenePool
+	public class QueensPool : ChromosomePool<QueensArrangement, Digit>
 	{
 		public QueensPool(int poolSize, QueensArrangementFactory f) : base(poolSize, f) { }
 	}

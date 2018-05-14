@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GeneticAlgorithmFramework.TravelingSalesman
 {
-	public class TripFactory : IChromosomeFactory
+	public class TripFactory : IChromosomeFactory<Trip, LocationIndex>
 	{
 		private int _stepsCount;
 		public TripFactory(int stepsCount)
@@ -16,7 +16,7 @@ namespace GeneticAlgorithmFramework.TravelingSalesman
 			_stepsCount = stepsCount;
 		}
 
-		public IChromosome CreateCromosome()
+		public Trip CreateChromosome()
 		{
 			var t = new List<LocationIndex>();
 			for (int i = 0; i < _stepsCount; i++)

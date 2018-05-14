@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GeneticAlgorithm
 {
-	public interface IGenePool
+	public interface IChromosomePool<C, G> where C : IChromosome<G> where G : IGene
 	{
 		/// <summary>
 		///  Repeats the following steps until the new population is generated from previous generation
@@ -26,7 +26,7 @@ namespace GeneticAlgorithm
 		/// <param name="maxIteration">Max number of generations that will be created to find the best solution</param>
 		/// <param name="threshold">return the result if there is an IChromosome with fitness higher than threshold</param>
 		/// <returns></returns>
-		IChromosome GenerateSolution(int maxIteration, double threshold);
+		C GenerateSolution(int maxIteration, double threshold);
 
 		/// <summary>
 		/// Calls GeneratePopulation to initialize the pool
@@ -37,25 +37,27 @@ namespace GeneticAlgorithm
 		/// <summary>
 		/// Select two parent chromosomes from a population according to their fitness(the better fitness, the bigger chance to be selected)
 		/// </summary>
-		IChromosome Select();
+		C Select();
 
 		/// <summary>
 		/// With a crossover probability cross over the parents to form new offspring(children). If no crossover was performed, offspring is the exact copy of parents.
 		/// </summary>
-		IChromosome Crossover(IChromosome mom, IChromosome dad);
+		C Crossover(C mom, C dad);
 
-		IChromosome BestChromosome { get; }
+		C BestChromosome { get; }
 
-		IChromosomeFactory ChromosomeFactory { get; set; }
+		IChromosomeFactory<C, G> ChromosomeFactory { get; set; }
 	}
 
-	public abstract class GenePool : IGenePool
+	public abstract class ChromosomePool<C, G> : IChromosomePool<C, G> where C : IChromosome<G> where G : IGene
 	{
-		List<IChromosome> _pool;
+		List<C> _pool;
 		int _poolSize;
 		static Random _rnd = new Random();
+		private int poolSize;
 
-		public GenePool(int poolSize, IChromosomeFactory factory)
+
+		public ChromosomePool(int poolSize, IChromosomeFactory<C,G> factory)
 		{
 			this.ChromosomeFactory = factory;
 			Initialize(poolSize);
@@ -63,27 +65,27 @@ namespace GeneticAlgorithm
 
 		public void Initialize(int poolSize)
 		{
-			_pool = new List<IChromosome>();
+			_pool = new List<C>();
 			_poolSize = poolSize;
 			for (int i = 0; i < _poolSize; i++)
 			{
-				_pool.Add(ChromosomeFactory.CreateCromosome());
+				_pool.Add(ChromosomeFactory.CreateChromosome());
 			}
 		}
 
-		public IChromosome Crossover(IChromosome mom, IChromosome dad)
+		public C Crossover(C mom, C dad)
 		{
-			return mom.Crossover(dad);
+			return (C)mom.Crossover(dad);
 		}
 
 		public void CreateNextGeneration()
 		{
-			var nextGeneration = new List<IChromosome>();
+			var nextGeneration = new List<C>();
 			while (nextGeneration.Count < _poolSize)
 			{
 				///Two chromosomes are selected and the result of their 
 				///crossover is mutated and added to the next generation population
-				nextGeneration.Add(Select().Crossover(Select()).Mutate());
+				nextGeneration.Add((C)Select().Crossover(Select()).Mutate());
 			}
 
 			_pool.AddRange(nextGeneration);
@@ -94,7 +96,7 @@ namespace GeneticAlgorithm
 			//https://stackoverflow.com/questions/2140787/select-k-random-elements-from-a-list-whose-elements-have-weights
 		}
 
-		public IChromosome BestChromosome
+		public C BestChromosome
 		{
 			get
 			{
@@ -103,14 +105,14 @@ namespace GeneticAlgorithm
 		}
 
 		[Inject]
-		public IChromosomeFactory ChromosomeFactory { get; set; }
-
-		public IChromosome Select()
+		public IChromosomeFactory<C, G> ChromosomeFactory { get; set; }
+		
+		public C Select()
 		{
 			return _pool[_pool.WeightedPick(c => c.Fitness)];
 		}
 
-		public IChromosome GenerateSolution(int maxIteration, double threshold)
+		public C GenerateSolution(int maxIteration, double threshold)
 		{
 			for (int i = 0; i < maxIteration; i++)
 			{
